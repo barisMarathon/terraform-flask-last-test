@@ -1,0 +1,20 @@
+{
+  "settings": [
+    {
+      "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+      "value": "false"
+    },
+    {
+      "name": "WEBSITES_PORT",
+      "value": "8000"
+    },
+    {
+      "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+      "value": "true"
+    },
+    {
+      "name": "FLASK_ENV",
+      "value": "production"
+    }
+  ]
+}

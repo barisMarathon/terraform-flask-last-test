@@ -1,7 +1,5 @@
-from flask import Flask, render_template, request
-import subprocess
 import os
-import json
+from flask import Flask, render_template, request
 from ai import process_prompt, process_restaurant_json
 from gpt_vision import process_image_prompt
 from dotenv import load_dotenv
@@ -11,12 +9,24 @@ load_dotenv()
 
 app = Flask(__name__)
 
-TERRAFORM_DIR = r"D:/terraform-sdx-project"
-SCRIPT_PATH = os.path.join(TERRAFORM_DIR, "install_flask_app.sh")
+# Remove Terraform-related constants since they won't work in Azure App Service
+# TERRAFORM_DIR = r"D:/terraform-sdx-project"
+# SCRIPT_PATH = os.path.join(TERRAFORM_DIR, "install_flask_app.sh")
+
+import os
+import json
+from flask import Flask, render_template, request
+from ai import process_prompt, process_restaurant_json
+from gpt_vision import process_image_prompt
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    link = None
     vm_ip = None
     message = None
     ai_response = None
@@ -62,74 +72,10 @@ def index():
             else:
                 gpt_vision_response = "Error: Please upload a valid image file (PNG, JPG, JPEG, GIF, BMP, WebP)"
         
-        # Handle GitHub URL deployment (enhanced to support both repos and individual HTML files)
+        # Handle GitHub URL (Note: Direct deployment removed for Azure App Service)
         github_url = request.form.get("github_url")
         if github_url:
-            # Check if it's an individual HTML file URL or a repository URL
-            if "github.com" in github_url and "/blob/" in github_url and github_url.endswith('.html'):
-                # Individual HTML file URL
-                raw_url = github_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-                
-                # Create deployment script that downloads the HTML file directly
-                with open(SCRIPT_PATH, "w") as f:
-                    f.write(f"""#!/bin/bash
-sudo apt update
-sudo apt install -y apache2 wget
-sudo rm -rf /var/www/html/*
-
-# Download the HTML file directly
-sudo wget -O /var/www/html/index.html "{raw_url}"
-
-# Check if download was successful
-if [ -f "/var/www/html/index.html" ]; then
-    echo "Successfully downloaded HTML file"
-    sudo chmod -R 755 /var/www/html
-    sudo systemctl restart apache2
-else
-    echo "Failed to download HTML file"
-    sudo echo "<html><body><h1>Error: Failed to download HTML file</h1></body></html>" > /var/www/html/index.html
-    sudo chmod -R 755 /var/www/html
-    sudo systemctl restart apache2
-fi
-
-# Verify deployment
-sudo ls -la /var/www/html/
-""")
-                os.chmod(SCRIPT_PATH, 0o755)
-
-                # Terraform komutlarını çalıştır
-                try:
-                    subprocess.run(["terraform", "init"], cwd=TERRAFORM_DIR, check=True)
-                    subprocess.run(["terraform", "plan"], cwd=TERRAFORM_DIR, check=True)
-                    subprocess.run(["terraform", "apply", "-auto-approve"], cwd=TERRAFORM_DIR, check=True)
-                    vm_ip = subprocess.check_output(["terraform", "output", "-raw", "vm_public_ip"], cwd=TERRAFORM_DIR, text=True).strip()
-                    vm_ip_with_protocol = f"http://{vm_ip}" if not vm_ip.startswith('http') else vm_ip
-                    message = f"Successfully deployed HTML file! Access at: {vm_ip_with_protocol}"
-                except subprocess.CalledProcessError as e:
-                    message = f"Terraform komutlarında hata oluştu: {e}"
-            else:
-                # Traditional repository URL
-                with open(SCRIPT_PATH, "w") as f:
-                    f.write(f"""#!/bin/bash
-sudo apt update
-sudo apt install -y apache2 git
-sudo rm -rf /var/www/html/*
-sudo git clone {github_url} /var/www/html
-sudo chmod -R 755 /var/www/html
-sudo systemctl restart apache2
-""")
-                os.chmod(SCRIPT_PATH, 0o755)
-
-                # Terraform komutlarını çalıştır
-                try:
-                    subprocess.run(["terraform", "init"], cwd=TERRAFORM_DIR, check=True)
-                    subprocess.run(["terraform", "plan"], cwd=TERRAFORM_DIR, check=True)
-                    subprocess.run(["terraform", "apply", "-auto-approve"], cwd=TERRAFORM_DIR, check=True)
-                    vm_ip = subprocess.check_output(["terraform", "output", "-raw", "vm_public_ip"], cwd=TERRAFORM_DIR, text=True).strip()
-                    vm_ip_with_protocol = f"http://{vm_ip}" if not vm_ip.startswith('http') else vm_ip
-                    message = f"Successfully deployed repository! Access at: {vm_ip_with_protocol}"
-                except subprocess.CalledProcessError as e:
-                    message = f"Terraform komutlarında hata oluştu: {e}"
+            message = "Note: Direct deployment is not available in Azure App Service. The generated content is available through GitHub links provided by the AI services."
 
     return render_template("index.html", vm_ip=vm_ip, message=message, 
                          ai_response=ai_response, gpt_vision_response=gpt_vision_response)
@@ -137,15 +83,11 @@ sudo systemctl restart apache2
 
 @app.route("/destroy", methods=["POST"])
 def destroy():
-    message = None
-    try:
-        subprocess.run(["terraform", "destroy", "-auto-approve"], cwd=TERRAFORM_DIR, check=True)
-        message = "Tüm kaynaklar başarıyla silindi."
-    except subprocess.CalledProcessError as e:
-        message = f"Destroy sırasında hata oluştu: {e}"
-
-    return render_template("index.html", vm_ip=None, link=None, message=message)
+    message = "Resource management is not available in Azure App Service."
+    return render_template("index.html", vm_ip=None, message=message)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=True)
+    # For Azure App Service, use the PORT environment variable
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host="0.0.0.0", port=port, debug=False)
