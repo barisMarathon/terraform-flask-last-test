@@ -1,0 +1,8 @@
+my_sub_id           = "your subscription id"   # you can find it with az account show command 
+ssh_public_key_path = "your ssh key location"  # this was determined when you were installing azure cli  
+location            = "your region"            # Student (Turkiye ?) subscriptions are limited with this regions: spaincentral, francecentral, polandcentral, italynorth, switzerlandnorth
+resource_group_name = "your resource group name"
+vnet_cidr           = "your vnet cidr"
+subnet_cidr         = "your subnet cidr"
+vm_admin_username   = "your username"   #determined by urself not some value you need to find 
+

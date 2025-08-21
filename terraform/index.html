@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AutoDeploy - GitHub URL Submission</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: #fff;
+        margin-top: 80px;
+        padding: 32px 40px;
+        border-radius: 10px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        width: 350px;
+        text-align: center;
+      }
+      h1 {
+        color: #24292f;
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      input[type="url"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d1d5da;
+        border-radius: 5px;
+        margin-bottom: 18px;
+        font-size: 16px;
+      }
+      button {
+        background: #2ea44f;
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #22863a;
+      }
+      .footer {
+        margin-top: 40px;
+        color: #6a737d;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>AutoDeploy</h1>
+      <form id="deployForm">
+        <label for="githubUrl">GitHub Repository URL</label>
+        <input
+          type="url"
+          id="githubUrl"
+          name="githubUrl"
+          placeholder="https://github.com/user/repo"
+          required
+        />
+        <button type="submit">Deploy</button>
+      </form>
+      <div id="message"></div>
+    </div>
+    <div class="footer">&copy; 2024 AutoDeploy</div>
+    <script>
+      document
+        .getElementById("deployForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const url = document.getElementById("githubUrl").value;
+          // Placeholder for deployment logic
+          document.getElementById("message").textContent =
+            "Deployment triggered for: " + url;
+        });
+    </script>
+  </body>
+</html>

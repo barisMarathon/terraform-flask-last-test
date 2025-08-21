@@ -2,3 +2,28 @@ __pycache__/
 *.pyc
 .env
 venv/
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfvars
+.terraform.lock.hcl
+terraform-provider-azurerm_*
+
+# Azure specific
+azure-settings.json
+.deployment
+web.config
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
