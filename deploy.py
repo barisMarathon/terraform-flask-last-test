@@ -1,3 +1,5 @@
+#bu file a ihtiyaç yok
+
 #!/usr/bin/env python3
 """
 Azure App Service deployment helper script
