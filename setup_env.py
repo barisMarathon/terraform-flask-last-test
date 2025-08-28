@@ -1,3 +1,4 @@
+#lokal test için gerekli normalde gerek yok 
 """
 Helper script to set up environment variables for the Flask app
 Run this before starting your Flask application
